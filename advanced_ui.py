@@ -30,7 +30,8 @@ class AdvancedGameUI:
     def setup_game_board(self, cell_click_callback: Callable, 
                         restart_callback: Callable, 
                         menu_callback: Callable, 
-                        quit_callback: Callable) -> None:
+                        quit_callback: Callable,
+                        size: int = 3) -> None:
         """Create animated game board with enhanced styling and control buttons."""
         self.clear_window()
         
@@ -40,9 +41,9 @@ class AdvancedGameUI:
         
         # Create game cells
         self.cells = []
-        for row in range(3):
+        for row in range(size):
             row_cells = []
-            for col in range(3):
+            for col in range(size):
                 cell = tk.Button(
                     self.board_frame,
                     text="",
@@ -125,8 +126,8 @@ class AdvancedGameUI:
                 
     def update_board(self, board: list[list[Optional[str]]]) -> None:
         """Update board with current game state."""
-        for row in range(3):
-            for col in range(3):
+        for row in range(len(board)):
+            for col in range(len(board[0])):
                 cell = self.cells[row][col]
                 if board[row][col]:
                     cell.config(text=board[row][col])
@@ -255,26 +256,63 @@ class AdvancedGameUI:
             fg=self.text_color
         ).pack(pady=20)
         
-        # Difficulty selection
+        # Difficulty selection frame
+        diff_frame = tk.Frame(self.window, bg=self.bg_color)
+        diff_frame.pack(pady=5)
+        
         tk.Label(
-            self.window,
-            text="AI Difficulty:",
+            diff_frame,
+            text="Game Difficulty:",
             font=self.info_font,
             bg=self.bg_color,
             fg=self.text_color
-        ).pack(pady=5)
+        ).grid(row=0, column=0, columnspan=4, pady=5)
         
-        self.difficulty_var = tk.IntVar(value=5)
-        tk.Scale(
-            self.window,
-            from_=1,
-            to=10,
-            orient="horizontal",
+        self.difficulty_var = tk.StringVar(value="medium")
+        
+        tk.Radiobutton(
+            diff_frame,
+            text="Easy",
             variable=self.difficulty_var,
+            value="easy",
+            font=self.info_font,
             bg=self.bg_color,
             fg=self.text_color,
-            highlightthickness=0
-        ).pack(pady=5)
+            selectcolor=self.cell_color
+        ).grid(row=1, column=0, padx=5)
+        
+        tk.Radiobutton(
+            diff_frame,
+            text="Medium",
+            variable=self.difficulty_var,
+            value="medium",
+            font=self.info_font,
+            bg=self.bg_color,
+            fg=self.text_color,
+            selectcolor=self.cell_color
+        ).grid(row=1, column=1, padx=5)
+        
+        tk.Radiobutton(
+            diff_frame,
+            text="Hard",
+            variable=self.difficulty_var,
+            value="hard",
+            font=self.info_font,
+            bg=self.bg_color,
+            fg=self.text_color,
+            selectcolor=self.cell_color
+        ).grid(row=1, column=2, padx=5)
+        
+        tk.Radiobutton(
+            diff_frame,
+            text="Insane",
+            variable=self.difficulty_var,
+            value="insane",
+            font=self.info_font,
+            bg=self.bg_color,
+            fg=self.text_color,
+            selectcolor=self.cell_color
+        ).grid(row=1, column=3, padx=5)
         
         button_frame = tk.Frame(self.window, bg=self.bg_color)
         button_frame.pack(pady=20)

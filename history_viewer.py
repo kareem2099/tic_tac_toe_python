@@ -79,23 +79,8 @@ class HistoryViewer:
         self.board_frame = tk.Frame(main_frame, bg="#2c3e50")
         self.board_frame.pack(pady=20)
         
+        # Initialize empty cells list - will be populated when loading a game
         self.cells = []
-        for row in range(3):
-            row_cells = []
-            for col in range(3):
-                cell = tk.Label(
-                    self.board_frame,
-                    text="",
-                    font=("Helvetica", 32, "bold"),
-                    width=3,
-                    height=1,
-                    bg="#34495e",
-                    fg="white",
-                    relief="flat"
-                )
-                cell.grid(row=row, column=col, padx=5, pady=5, ipadx=10, ipady=10)
-                row_cells.append(cell)
-            self.cells.append(row_cells)
             
         # Move controls
         move_frame = tk.Frame(main_frame, bg="#2c3e50")
@@ -244,9 +229,10 @@ class HistoryViewer:
                 symbol = "X" if move["player"] == "X" else "O"
                 color = "#e74c3c" if symbol == "X" else "#3498db"
                 
-                # Animate the move
-                self.animator.pulse(self.cells[row][col], "#34495e", "#4a6fa5", 1, 0.2)
-                self.cells[row][col].config(text=symbol, fg=color)
+                # Animate the move with bounds checking
+                if 0 <= row < len(self.cells) and 0 <= col < len(self.cells[0]):
+                    self.animator.pulse(self.cells[row][col], "#34495e", "#4a6fa5", 1, 0.2)
+                    self.cells[row][col].config(text=symbol, fg=color)
                 
                 self.current_move = i + 1
                 self.move_slider.set(self.current_move)

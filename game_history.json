@@ -1244,5 +1244,1005 @@
     ],
     "game_type": "pvc",
     "move_count": 6
+  },
+  {
+    "timestamp": "2025-04-26T12:06:08.591995",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 1
+  },
+  {
+    "timestamp": "2025-04-26T12:06:18.735075",
+    "player1": "kareen",
+    "player2": "Computer",
+    "winner": "kareen",
+    "moves": [
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      }
+    ],
+    "game_type": "pvc",
+    "move_count": 1
+  },
+  {
+    "timestamp": "2025-04-26T12:07:07.377426",
+    "player1": "kareem",
+    "player2": "Computer",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      }
+    ],
+    "game_type": "pvc",
+    "move_count": 1
+  },
+  {
+    "timestamp": "2025-04-26T12:09:00.006788",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 1
+  },
+  {
+    "timestamp": "2025-04-26T12:09:06.179073",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 2,
+        "col": 1,
+        "player": "X",
+        "turn": 1
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 1
+  },
+  {
+    "timestamp": "2025-04-26T12:54:32.051853",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "O",
+        "turn": 4
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 5
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 5
+  },
+  {
+    "timestamp": "2025-04-26T12:54:48.041993",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "O",
+        "turn": 4
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 5
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 5
+  },
+  {
+    "timestamp": "2025-04-26T12:55:06.932075",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 1,
+        "col": 1,
+        "player": "X",
+        "turn": 1
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "player": "X",
+        "turn": 2
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "player": "O",
+        "turn": 3
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "player": "X",
+        "turn": 4
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "player": "O",
+        "turn": 5
+      },
+      {
+        "row": 4,
+        "col": 1,
+        "player": "X",
+        "turn": 6
+      },
+      {
+        "row": 4,
+        "col": 2,
+        "player": "O",
+        "turn": 7
+      },
+      {
+        "row": 5,
+        "col": 1,
+        "player": "X",
+        "turn": 8
+      },
+      {
+        "row": 5,
+        "col": 2,
+        "player": "O",
+        "turn": 9
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 9
+  },
+  {
+    "timestamp": "2025-04-26T12:55:35.888596",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "X",
+        "turn": 2
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "player": "X",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "player": "X",
+        "turn": 4
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "player": "X",
+        "turn": 5
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "O",
+        "turn": 6
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "player": "O",
+        "turn": 7
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "player": "O",
+        "turn": 8
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "player": "O",
+        "turn": 9
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 9
+  },
+  {
+    "timestamp": "2025-04-26T12:55:56.061723",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "O",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "X",
+        "turn": 2
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "O",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "X",
+        "turn": 4
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "player": "X",
+        "turn": 5
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 5
+  },
+  {
+    "timestamp": "2025-04-26T13:00:30.489840",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "O",
+        "turn": 4
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 5
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "player": "O",
+        "turn": 6
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "player": "X",
+        "turn": 7
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 7
+  },
+  {
+    "timestamp": "2025-04-26T13:05:44.951764",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "O",
+        "turn": 4
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 5
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "player": "O",
+        "turn": 6
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "player": "X",
+        "turn": 7
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 7
+  },
+  {
+    "timestamp": "2025-04-26T13:06:02.237640",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "O",
+        "turn": 4
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 5
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "player": "O",
+        "turn": 6
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "player": "X",
+        "turn": 7
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "player": "O",
+        "turn": 8
+      },
+      {
+        "row": 4,
+        "col": 0,
+        "player": "X",
+        "turn": 9
+      },
+      {
+        "row": 4,
+        "col": 1,
+        "player": "O",
+        "turn": 10
+      },
+      {
+        "row": 5,
+        "col": 0,
+        "player": "X",
+        "turn": 11
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 11
+  },
+  {
+    "timestamp": "2025-04-26T13:06:23.088978",
+    "player1": "kareem",
+    "player2": "ehab",
+    "winner": "kareem",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "X",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "player": "O",
+        "turn": 4
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "player": "X",
+        "turn": 5
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "player": "O",
+        "turn": 6
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "player": "X",
+        "turn": 7
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "player": "O",
+        "turn": 8
+      },
+      {
+        "row": 4,
+        "col": 4,
+        "player": "X",
+        "turn": 9
+      },
+      {
+        "row": 4,
+        "col": 5,
+        "player": "O",
+        "turn": 10
+      },
+      {
+        "row": 5,
+        "col": 5,
+        "player": "X",
+        "turn": 11
+      }
+    ],
+    "game_type": "pvp",
+    "move_count": 11
+  },
+  {
+    "timestamp": "2025-04-26T13:10:57.022808",
+    "player1": "kareem",
+    "player2": "Computer",
+    "winner": "Computer",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "O",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "player": "O",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 4
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "X",
+        "turn": 5
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "player": "O",
+        "turn": 6
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 7
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "player": "X",
+        "turn": 8
+      }
+    ],
+    "game_type": "pvc",
+    "move_count": 8
+  },
+  {
+    "timestamp": "2025-04-26T13:17:49.698024",
+    "player1": "kareem",
+    "player2": "Computer",
+    "winner": "Computer",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "O",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "player": "O",
+        "turn": 3
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "player": "O",
+        "turn": 4
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "player": "O",
+        "turn": 5
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 6
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "X",
+        "turn": 7
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "player": "X",
+        "turn": 8
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "player": "X",
+        "turn": 9
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "player": "O",
+        "turn": 10
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "player": "X",
+        "turn": 11
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "player": "X",
+        "turn": 12
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "player": "X",
+        "turn": 13
+      },
+      {
+        "row": 4,
+        "col": 0,
+        "player": "O",
+        "turn": 14
+      },
+      {
+        "row": 4,
+        "col": 4,
+        "player": "O",
+        "turn": 15
+      }
+    ],
+    "game_type": "pvc",
+    "move_count": 15
+  },
+  {
+    "timestamp": "2025-04-26T13:20:33.488771",
+    "player1": "kareem",
+    "player2": "Computer",
+    "winner": "Computer",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "X",
+        "turn": 4
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "player": "O",
+        "turn": 5
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "O",
+        "turn": 6
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "player": "X",
+        "turn": 7
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "player": "O",
+        "turn": 8
+      }
+    ],
+    "game_type": "pvc",
+    "move_count": 8
+  },
+  {
+    "timestamp": "2025-04-26T13:33:45.158240",
+    "player1": "kareem",
+    "player2": "Computer",
+    "winner": "Computer",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "O",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "player": "O",
+        "turn": 3
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "player": "O",
+        "turn": 4
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 5
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "X",
+        "turn": 6
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "player": "X",
+        "turn": 7
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 8
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "player": "X",
+        "turn": 9
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "player": "O",
+        "turn": 10
+      }
+    ],
+    "game_type": "pvc",
+    "move_count": 10
+  },
+  {
+    "timestamp": "2025-04-26T13:41:36.606314",
+    "player1": "kareem",
+    "player2": "Computer",
+    "winner": "Computer",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "O",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "player": "O",
+        "turn": 3
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "player": "O",
+        "turn": 4
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "player": "O",
+        "turn": 5
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "O",
+        "turn": 6
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "X",
+        "turn": 7
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "player": "X",
+        "turn": 8
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "player": "X",
+        "turn": 9
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 10
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "player": "X",
+        "turn": 11
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "player": "X",
+        "turn": 12
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "player": "X",
+        "turn": 13
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "player": "O",
+        "turn": 14
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "player": "O",
+        "turn": 15
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "player": "X",
+        "turn": 16
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "player": "X",
+        "turn": 17
+      },
+      {
+        "row": 4,
+        "col": 0,
+        "player": "O",
+        "turn": 18
+      },
+      {
+        "row": 4,
+        "col": 2,
+        "player": "X",
+        "turn": 19
+      },
+      {
+        "row": 4,
+        "col": 4,
+        "player": "O",
+        "turn": 20
+      }
+    ],
+    "game_type": "pvc",
+    "move_count": 20
   }
 ]

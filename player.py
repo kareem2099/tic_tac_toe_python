@@ -50,11 +50,12 @@ class PlayerManager:
         moves = []
         move_count = 0
         # Create a temporary board to track move sequence
-        temp_board = [[None for _ in range(3)] for _ in range(3)]
+        size = len(board)
+        temp_board = [[None for _ in range(size)] for _ in range(size)]
         # Reconstruct move sequence by comparing boards
-        for turn in range(1, 10):
-            for row in range(3):
-                for col in range(3):
+        for turn in range(1, size*size + 1):
+            for row in range(size):
+                for col in range(size):
                     if board[row][col] != temp_board[row][col] and board[row][col] is not None:
                         moves.append({
                             "row": row,

@@ -35,16 +35,40 @@ class GameGUI:
         self.score_label: Optional[tk.Label] = None
 
     def menu_screen(self, pvp_callback, ai_callback, history_callback, quit_callback) -> None:
-        """Display the main menu with game mode options.
-        
-        Args:
-            pvp_callback: Function to call for Player vs Player mode
-            ai_callback: Function to call for Player vs AI mode
-            history_callback: Function to call for History display
-            quit_callback: Function to call for quitting
-        """
+        """Display the main menu with game mode and difficulty options."""
         self.clear_window()
-        tk.Label(self.window, text="Tic Tac Toe", font=("Helvetica", 24, "bold"), bg="#f0f0f0", fg="#333").pack(pady=20)
+        
+        # Main title
+        tk.Label(self.window, text="Tic Tac Toe", font=("Helvetica", 24, "bold"), 
+                bg=self.colors["light"], fg=self.colors["dark"]).pack(pady=20)
+
+        # Game difficulty selection (always visible)
+        self.game_diff_frame = tk.Frame(self.window, bg=self.colors["light"])
+        self.game_diff_frame.pack(pady=5)
+        
+        tk.Label(self.game_diff_frame, text="Game Mode:", font=("Helvetica", 12),
+                bg=self.colors["light"], fg=self.colors["dark"]).pack(side="left")
+                
+        self.game_diff_var = tk.StringVar(value="medium")
+        game_diffs = ["easy", "medium", "hard", "insane"]
+        game_diff_menu = tk.OptionMenu(self.game_diff_frame, self.game_diff_var, *game_diffs)
+        game_diff_menu.config(bg=self.colors["primary"], fg="white", 
+                            activebackground=self.colors["secondary"])
+        game_diff_menu.pack(side="left", padx=10)
+
+        # AI level selection (hidden by default)
+        self.ai_level_frame = tk.Frame(self.window, bg=self.colors["light"])
+        self.ai_level_frame.pack_forget()  # Start hidden
+        
+        tk.Label(self.ai_level_frame, text="AI Level (1-10):", font=("Helvetica", 12),
+                bg=self.colors["light"], fg=self.colors["dark"]).pack(side="left")
+                
+        self.ai_level_var = tk.IntVar(value=5)
+        ai_levels = list(range(1, 11))  # 1-10
+        self.ai_level_menu = tk.OptionMenu(self.ai_level_frame, self.ai_level_var, *ai_levels)
+        self.ai_level_menu.config(bg=self.colors["primary"], fg="white", 
+                                activebackground=self.colors["secondary"])
+        self.ai_level_menu.pack(side="left", padx=10)
 
         # Modern button styling
         button_style = {
@@ -70,9 +94,24 @@ class GameGUI:
                 bg=self.colors["light"], fg=self.colors["dark"]).pack(pady=(0, 20))
 
         # Menu buttons with hover effects
+        # Player vs Player button
+        pvp_btn = tk.Button(menu_frame, text="Player vs Player", 
+                           command=lambda: [pvp_callback(), self.ai_level_frame.pack_forget()],
+                           **button_style)
+        pvp_btn.pack(pady=8, ipady=5)
+        pvp_btn.bind("<Enter>", lambda e, b=pvp_btn: b.config(bg=self.colors["secondary"]))
+        pvp_btn.bind("<Leave>", lambda e, b=pvp_btn: b.config(bg=self.colors["primary"]))
+
+        # Player vs AI button
+        ai_btn = tk.Button(menu_frame, text="Player vs AI", 
+                         command=lambda: [ai_callback(), self.ai_level_frame.pack(pady=5)],
+                         **button_style)
+        ai_btn.pack(pady=8, ipady=5)
+        ai_btn.bind("<Enter>", lambda e, b=ai_btn: b.config(bg=self.colors["secondary"]))
+        ai_btn.bind("<Leave>", lambda e, b=ai_btn: b.config(bg=self.colors["primary"]))
+
+        # Other buttons
         buttons = [
-            ("Player vs Player", pvp_callback),
-            ("Player vs AI", ai_callback),
             ("Game History", history_callback),
             ("Exit", quit_callback)
         ]
@@ -83,7 +122,7 @@ class GameGUI:
             btn.bind("<Enter>", lambda e, b=btn: b.config(bg=self.colors["secondary"]))
             btn.bind("<Leave>", lambda e, b=btn: b.config(bg=self.colors["primary"]))
 
-    def setup_game_board(self, cell_click_callback, restart_callback, menu_callback, quit_callback) -> None:
+    def setup_game_board(self, cell_click_callback, restart_callback, menu_callback, quit_callback, size=3) -> None:
         """Initialize and display the game board with responsive layout.
         
         Args:
@@ -91,12 +130,7 @@ class GameGUI:
             restart_callback: Function to call for restarting game
             menu_callback: Function to call to return to main menu
             quit_callback: Function to call to exit game
-            
-        Features:
-            - Responsive grid layout
-            - Hover effects
-            - Consistent styling
-            - Proper widget hierarchy
+            size: Size of the game board (3-6)
         """
         self.clear_window()
         self.board_buttons = []
@@ -108,13 +142,18 @@ class GameGUI:
         # Game info display
         self.info_label = tk.Label(game_frame, text="", font=("Segoe UI", 16, "bold"), 
                                  bg=self.colors["light"], fg=self.colors["dark"])
-        self.info_label.grid(row=0, column=0, columnspan=3, pady=(0, 15))
+        self.info_label.grid(row=0, column=0, columnspan=size, pady=(0, 15))
+
+        # Adjust font size based on board size
+        font_size = 36 if size <= 4 else 24 if size == 5 else 20
+        btn_width = 6 if size <= 4 else 4 if size == 5 else 3
 
         # Game board with modern styling and animations
-        for r in range(3):
+        for r in range(size):
             row_buttons = []
-            for c in range(3):
-                btn = tk.Button(game_frame, text="", font=("Segoe UI", 36, "bold"), width=6, height=2,
+            for c in range(size):
+                btn = tk.Button(game_frame, text="", font=("Segoe UI", font_size, "bold"), 
+                              width=btn_width, height=2,
                               bg="white", fg=self.colors["dark"], activebackground="#f8fafc",
                               relief="flat", borderwidth=2,
                               command=lambda row=r, col=c: cell_click_callback(row, col))
@@ -179,8 +218,9 @@ class GameGUI:
         Args:
             board: The current game board state
         """
-        for r in range(3):
-            for c in range(3):
+        size = len(board)
+        for r in range(size):
+            for c in range(size):
                 self.board_buttons[r][c]["text"] = board[r][c] if board[r][c] else ""
 
     def disable_board(self) -> None:

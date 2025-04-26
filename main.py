@@ -28,17 +28,21 @@ class TicTacToe:
         self.window.mainloop()
 
     def setup_pvp(self) -> None:
-        """Set up Player vs Player mode."""
+        """Set up Player vs Player mode with difficulty selection."""
         self.mode = "pvp"
         player1 = self.gui.ask_player_name("Enter name for Player X:")
         player2 = self.gui.ask_player_name("Enter name for Player O:")
+        difficulty = self.gui.difficulty_var.get()
+        self.logic = GameLogic(difficulty)
         self.players.set_players(player1, player2, "pvp")
         self.start_game()
 
     def setup_ai(self) -> None:
-        """Set up Player vs AI mode."""
+        """Set up Player vs AI mode with selected difficulty."""
         self.mode = "ai"
         player1 = self.gui.ask_player_name("Enter your name:")
+        difficulty = self.gui.difficulty_var.get()
+        self.logic = GameLogic(difficulty)
         self.players.set_players(player1, "Computer", "ai")
         self.start_game()
 
@@ -52,9 +56,10 @@ class TicTacToe:
         )
 
     def start_game(self) -> None:
-        """Start a new game."""
+        """Start a new game with correct board size."""
         self.current_player = "X"
-        self.logic.board = [[None for _ in range(3)] for _ in range(3)]
+        size = self.logic.manager.get_board_size()
+        self.logic.board = [[None for _ in range(size)] for _ in range(size)]
         self.players.game_start_time = int(self.window.tk.call('clock', 'seconds'))
         self.players.move_count = 0
         
@@ -65,7 +70,8 @@ class TicTacToe:
             cell_click_callback=self.cell_clicked,
             restart_callback=self.start_game,
             menu_callback=self.return_to_menu,
-            quit_callback=self.window.quit
+            quit_callback=self.window.quit,
+            size=size
         )
         
         self.update_display()
@@ -73,32 +79,39 @@ class TicTacToe:
     def cell_clicked(self, row: int, col: int) -> None:
         """Handle cell click event with improved validation."""
         try:
-            if row not in range(3) or col not in range(3):
+            size = len(self.logic.board)
+            if row not in range(size) or col not in range(size):
                 return
                 
             if self.logic.board[row][col] is not None:
                 return
                 
+            # Make the move and update UI
             self.logic.board[row][col] = self.current_player
             self.players.move_count += 1
             self.gui.update_board(self.logic.board)
+            
+            # Force immediate UI update
+            self.window.update()
+            
+            # Check for win/draw
+            if self.logic.check_winner(self.logic.board, self.current_player):
+                winner = self.players.player1 if self.current_player == "X" else self.players.player2
+                self.players.update_score(winner)
+                win_positions = self.logic.get_win_positions(self.logic.board, self.current_player)
+                self.gui.animate_win(win_positions)
+                self.gui.show_message("Game Over", f"{winner} wins!")
+                self.gui.disable_board()
+                self.players.record_game_result(winner, self.window, self.logic.board)
+                return
+                
+            if self.logic.is_draw(self.logic.board):
+                self.gui.show_message("Game Over", "It's a draw!")
+                self.players.record_game_result("Draw", self.window, self.logic.board)
+                return
+                
         except Exception as e:
             print(f"Cell click error: {e}")
-            return
-        
-        if self.logic.check_winner(self.logic.board, self.current_player):
-            winner = self.players.player1 if self.current_player == "X" else self.players.player2
-            self.players.update_score(winner)
-            # Animate winning moves
-            win_positions = self.logic.get_win_positions(self.logic.board, self.current_player)
-            self.gui.animate_win(win_positions)
-            self.gui.show_message("Game Over", f"{winner} wins!")
-            self.gui.disable_board()
-            self.players.record_game_result(winner, self.window, self.logic.board)
-            return
-        elif self.logic.is_draw(self.logic.board):
-            self.gui.show_message("Game Over", "It's a draw!")
-            self.players.record_game_result("Draw", self.window, self.logic.board)
             return
             
         self.current_player = "O" if self.current_player == "X" else "X"
