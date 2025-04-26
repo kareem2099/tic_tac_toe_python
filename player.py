@@ -1,0 +1,138 @@
+import tkinter as tk
+from typing import List, Dict, Optional
+from game_history import GameHistory
+
+class PlayerManager:
+    """Handles player information, scores, and game history."""
+    
+    def __init__(self):
+        """Initialize player data and game history."""
+        self.player1 = "Player 1"
+        self.player2 = "Player 2"
+        self.scores = {self.player1: 0, self.player2: 0}
+        self.history = GameHistory()
+        self.game_start_time = None
+        self.move_count = 0
+
+    def set_players(self, player1: str, player2: str, mode: str = "pvp") -> None:
+        """Set player names, game mode and reset scores.
+        
+        Args:
+            player1: Name for Player 1 (X)
+            player2: Name for Player 2 (O)
+            mode: Game mode ('pvp' or 'ai')
+            
+        Features:
+            - Validates player names
+            - Tracks player stats
+            - Handles AI player specially
+        """
+        self.player1 = player1.strip() if player1 else "Player 1"
+        self.player2 = player2.strip() if player2 else "Player 2"
+        self.mode = mode
+        
+        # Initialize scores and stats
+        self.scores = {self.player1: 0, self.player2: 0}
+        self.stats = {
+            self.player1: {"wins": 0, "losses": 0, "draws": 0},
+            self.player2: {"wins": 0, "losses": 0, "draws": 0}
+        }
+
+    def record_game_result(self, result: str, window: tk.Tk, board: List[List[Optional[str]]]) -> None:
+        """Record game results in history.
+        
+        Args:
+            result: The game result ('Player 1', 'Player 2', or 'Draw')
+            window: The tkinter window for timestamp purposes
+            board: The current game board state
+        """
+        moves = []
+        for row in range(3):
+            for col in range(3):
+                if board[row][col] is not None:
+                    moves.append({
+                        "row": row,
+                        "col": col,
+                        "player": "X" if board[row][col] == "X" else "O",
+                        "turn": len(moves) + 1
+                    })
+        
+        self.history.add_game(
+            player1=self.player1,
+            player2=self.player2,
+            winner=result if result != "Draw" else None,
+            moves=moves,
+            game_type="pvp" if self.mode == "pvp" else "pvc"
+        )
+
+    def update_score(self, winner: str) -> None:
+        """Update player scores and statistics based on game result.
+        
+        Args:
+            winner: The winning player ('Player 1', 'Player 2') or 'Draw'
+            
+        Features:
+            - Updates scores
+            - Maintains win/loss/draw stats
+            - Handles draws specially
+        """
+        if winner == "Draw":
+            if self.player1 in self.stats:
+                self.stats[self.player1]["draws"] += 1
+            if self.player2 in self.stats:
+                self.stats[self.player2]["draws"] += 1
+        elif winner in self.scores:
+            self.scores[winner] += 1
+            if winner in self.stats:
+                self.stats[winner]["wins"] += 1
+            loser = self.player2 if winner == self.player1 else self.player1
+            if loser in self.stats:
+                self.stats[loser]["losses"] += 1
+
+    def show_history(self, window: tk.Tk) -> None:
+        """Display the game history in a new window.
+        
+        Args:
+            window: The parent tkinter window
+        """
+        history_window = tk.Toplevel(window)
+        history_window.title("Game History")
+        history_window.configure(bg="#f0f0f0")
+        
+        history = self.history.get_all_history()
+        if not history:
+            tk.Label(history_window, text="No games played yet", bg="#f0f0f0", fg="#555").pack(pady=20)
+            return
+            
+        headers = ["Date", "Player 1", "Player 2", "Winner", "Moves", "Type"]
+        for i, header in enumerate(headers):
+            tk.Label(history_window, text=header, font=("Helvetica", 10, "bold"), 
+                    bg="#4a90e2", fg="white", padx=5, pady=2).grid(row=0, column=i, sticky="ew", padx=1)
+            
+        for row, game in enumerate(history, start=1):
+            bg_color = "#ffffff" if row % 2 == 1 else "#f8f8f8"
+            tk.Label(history_window, text=game["timestamp"][:19], bg=bg_color).grid(row=row, column=0, padx=5, pady=1, sticky="ew")
+            tk.Label(history_window, text=game["player1"], bg=bg_color).grid(row=row, column=1, padx=5, pady=1, sticky="ew")
+            tk.Label(history_window, text=game["player2"], bg=bg_color).grid(row=row, column=2, padx=5, pady=1, sticky="ew")
+            tk.Label(history_window, text=game["winner"] or "Draw", bg=bg_color).grid(row=row, column=3, padx=5, pady=1, sticky="ew")
+            tk.Label(history_window, text=game["move_count"], bg=bg_color).grid(row=row, column=4, padx=5, pady=1, sticky="ew")
+            tk.Label(history_window, text=game["game_type"].upper(), bg=bg_color).grid(row=row, column=5, padx=5, pady=1, sticky="ew")
+
+    def get_score_text(self) -> str:
+        """Generate detailed score display text with stats.
+        
+        Returns:
+            Formatted string showing:
+            - Player names and symbols
+            - Current scores
+            - Win/loss/draw stats
+        """
+        p1_stats = self.stats.get(self.player1, {})
+        p2_stats = self.stats.get(self.player2, {})
+        
+        return (
+            f"{self.player1} (X): {self.scores[self.player1]} "
+            f"[W{p1_stats.get('wins',0)} L{p1_stats.get('losses',0)} D{p1_stats.get('draws',0)}]\n"
+            f"{self.player2} (O): {self.scores[self.player2]} "
+            f"[W{p2_stats.get('wins',0)} L{p2_stats.get('losses',0)} D{p2_stats.get('draws',0)}]"
+        )
