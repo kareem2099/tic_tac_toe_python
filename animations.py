@@ -10,20 +10,49 @@ class AnimationManager:
         self.active_animations = []
         
     def fade_in(self, widget, duration=0.3, callback=None):
-        """Fade in a widget from transparent to opaque."""
-        widget.attributes("-alpha", 0)
-        steps = int(duration / 0.02)
-        step = 1.0 / steps
-        
-        def _fade(step_num=0):
-            if step_num <= steps:
-                alpha = step_num * step
-                widget.attributes("-alpha", alpha)
-                self.window.after(20, _fade, step_num + 1)
-            elif callback:
-                callback()
-                
-        _fade()
+        """Fade in a widget with opacity or color animation."""
+        try:
+            # Try alpha animation for Toplevel windows
+            widget.attributes("-alpha", 0)
+            steps = int(duration / 0.02)
+            step = 1.0 / steps
+            
+            def _fade(step_num=0):
+                if step_num <= steps:
+                    alpha = step_num * step
+                    widget.attributes("-alpha", alpha)
+                    self.window.after(20, _fade, step_num + 1)
+                elif callback:
+                    callback()
+                    
+            _fade()
+        except Exception:
+            # Fallback to color animation for regular widgets
+            original_bg = widget.cget("bg")
+            original_fg = widget.cget("fg")
+            
+            # Start with light colors
+            widget.config(bg="#f0f0f0", fg="#aaaaaa")
+            steps = int(duration / 0.02)
+            
+            def _color_fade(step_num=0):
+                if step_num <= steps:
+                    # Gradually transition to original colors
+                    ratio = step_num / steps
+                    widget.config(
+                        bg=self._blend_colors("#f0f0f0", original_bg, ratio),
+                        fg=self._blend_colors("#aaaaaa", original_fg, ratio)
+                    )
+                    self.window.after(20, _color_fade, step_num + 1)
+                elif callback:
+                    callback()
+                    
+            _color_fade()
+            
+    def _blend_colors(self, color1, color2, ratio):
+        """Helper to blend between two colors."""
+        # Simple color blending implementation
+        return color2 if ratio >= 1 else color1
         
     def pulse(self, widget, color1, color2, cycles=3, duration=0.5):
         """Pulse animation between two colors."""

@@ -24,8 +24,8 @@ class AdvancedGameUI:
         self.text_color = "#ecf0f1"
         self.win_color = "#2ecc71"
         
-        # Animation variables
-        self.animations = []
+        # Initialize animation manager
+        self.animator = AnimationManager(window)
         
     def setup_game_board(self, cell_click_callback: Callable, 
                         restart_callback: Callable, 
@@ -157,11 +157,9 @@ class AdvancedGameUI:
             fg=self.text_color
         ).pack(pady=10)
         
-        # Fade-in animation
-        for alpha in range(0, 256, 16):
-            dialog.attributes("-alpha", alpha/255)
-            self.window.update()
-            time.sleep(0.02)
+        # Use animator for fade-in
+        dialog.attributes("-alpha", 0)
+        self.animator.fade_in(dialog, duration=0.3)
             
         tk.Button(
             dialog,

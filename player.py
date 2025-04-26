@@ -46,16 +46,28 @@ class PlayerManager:
             window: The tkinter window for timestamp purposes
             board: The current game board state
         """
+        # Track moves in the order they were played
         moves = []
-        for row in range(3):
-            for col in range(3):
-                if board[row][col] is not None:
-                    moves.append({
-                        "row": row,
-                        "col": col,
-                        "player": "X" if board[row][col] == "X" else "O",
-                        "turn": len(moves) + 1
-                    })
+        move_count = 0
+        # Create a temporary board to track move sequence
+        temp_board = [[None for _ in range(3)] for _ in range(3)]
+        # Reconstruct move sequence by comparing boards
+        for turn in range(1, 10):
+            for row in range(3):
+                for col in range(3):
+                    if board[row][col] != temp_board[row][col] and board[row][col] is not None:
+                        moves.append({
+                            "row": row,
+                            "col": col,
+                            "player": board[row][col],
+                            "turn": turn
+                        })
+                        temp_board[row][col] = board[row][col]
+                        move_count += 1
+                        break  # Only one move per turn
+                else:
+                    continue
+                break
         
         self.history.add_game(
             player1=self.player1,
@@ -90,33 +102,21 @@ class PlayerManager:
                 self.stats[loser]["losses"] += 1
 
     def show_history(self, window: tk.Tk) -> None:
-        """Display the game history in a new window.
+        """Display enhanced game history with animations and replay.
         
         Args:
             window: The parent tkinter window
         """
-        history_window = tk.Toplevel(window)
-        history_window.title("Game History")
-        history_window.configure(bg="#f0f0f0")
-        
+        from history_viewer import HistoryViewer
         history = self.history.get_all_history()
         if not history:
-            tk.Label(history_window, text="No games played yet", bg="#f0f0f0", fg="#555").pack(pady=20)
+            no_history = tk.Toplevel(window)
+            no_history.title("Game History")
+            tk.Label(no_history, text="No games played yet", pady=20).pack()
             return
             
-        headers = ["Date", "Player 1", "Player 2", "Winner", "Moves", "Type"]
-        for i, header in enumerate(headers):
-            tk.Label(history_window, text=header, font=("Helvetica", 10, "bold"), 
-                    bg="#4a90e2", fg="white", padx=5, pady=2).grid(row=0, column=i, sticky="ew", padx=1)
-            
-        for row, game in enumerate(history, start=1):
-            bg_color = "#ffffff" if row % 2 == 1 else "#f8f8f8"
-            tk.Label(history_window, text=game["timestamp"][:19], bg=bg_color).grid(row=row, column=0, padx=5, pady=1, sticky="ew")
-            tk.Label(history_window, text=game["player1"], bg=bg_color).grid(row=row, column=1, padx=5, pady=1, sticky="ew")
-            tk.Label(history_window, text=game["player2"], bg=bg_color).grid(row=row, column=2, padx=5, pady=1, sticky="ew")
-            tk.Label(history_window, text=game["winner"] or "Draw", bg=bg_color).grid(row=row, column=3, padx=5, pady=1, sticky="ew")
-            tk.Label(history_window, text=game["move_count"], bg=bg_color).grid(row=row, column=4, padx=5, pady=1, sticky="ew")
-            tk.Label(history_window, text=game["game_type"].upper(), bg=bg_color).grid(row=row, column=5, padx=5, pady=1, sticky="ew")
+        # Launch enhanced history viewer
+        HistoryViewer(window, history)
 
     def get_score_text(self) -> str:
         """Generate detailed score display text with stats.
