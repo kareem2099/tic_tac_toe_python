@@ -1,20 +1,63 @@
 import tkinter as tk
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple, Literal
+from dataclasses import dataclass
 from game_history import GameHistory
 
-class PlayerManager:
-    """Handles player information, scores, and game history."""
+@dataclass
+class PlayerStats:
+    """Tracks comprehensive player statistics.
     
-    def __init__(self):
+    Attributes:
+        wins: Number of games won
+        losses: Number of games lost
+        draws: Number of games drawn
+        win_streak: Current consecutive wins
+        max_streak: Highest win streak achieved
+        first_move_win: Wins when player moved first
+    """
+    wins: int = 0
+    losses: int = 0
+    draws: int = 0
+    win_streak: int = 0
+    max_streak: int = 0
+    first_move_win: int = 0
+
+class PlayerManager:
+    """Manages all player-related data and statistics.
+    
+    Features:
+        - Player profile management
+        - Score tracking
+        - Game history recording
+        - Statistics analysis
+        - Streak tracking
+    
+    Attributes:
+        player1: Name of first player (X)
+        player2: Name of second player (O) 
+        scores: Dictionary mapping player names to scores
+        stats: Dictionary mapping player names to PlayerStats
+        history: GameHistory instance for recording games
+        mode: Current game mode ('pvp' or 'ai')
+        _last_winner: Cache of last game winner
+    """
+    
+    def __init__(self) -> None:
         """Initialize player data and game history."""
         self.player1 = "Player 1"
         self.player2 = "Player 2"
-        self.scores = {self.player1: 0, self.player2: 0}
+        self.scores: Dict[str, int] = {self.player1: 0, self.player2: 0}
+        self.stats: Dict[str, PlayerStats] = {
+            self.player1: PlayerStats(),
+            self.player2: PlayerStats()
+        }
         self.history = GameHistory()
-        self.game_start_time = None
-        self.move_count = 0
+        self.mode: Literal['pvp', 'ai'] = 'pvp'
+        self.game_start_time: Optional[int] = None
+        self.move_count: int = 0
+        self._last_winner: Optional[str] = None
 
-    def set_players(self, player1: str, player2: str, mode: str = "pvp") -> None:
+    def set_players(self, player1: str, player2: str, mode: Literal['pvp', 'ai'] = "pvp") -> None:
         """Set player names, game mode and reset scores.
         
         Args:
@@ -22,53 +65,63 @@ class PlayerManager:
             player2: Name for Player 2 (O)
             mode: Game mode ('pvp' or 'ai')
             
-        Features:
-            - Validates player names
-            - Tracks player stats
-            - Handles AI player specially
+        Raises:
+            ValueError: If player names are empty after stripping
         """
-        self.player1 = player1.strip() if player1 else "Player 1"
-        self.player2 = player2.strip() if player2 else "Player 2"
+        p1 = player1.strip() if player1 else "Player 1"
+        p2 = player2.strip() if player2 else "Player 2"
+        
+        if not p1 or not p2:
+            raise ValueError("Player names cannot be empty")
+            
+        self.player1 = p1
+        self.player2 = p2
         self.mode = mode
         
         # Initialize scores and stats
         self.scores = {self.player1: 0, self.player2: 0}
         self.stats = {
-            self.player1: {"wins": 0, "losses": 0, "draws": 0},
-            self.player2: {"wins": 0, "losses": 0, "draws": 0}
+            self.player1: PlayerStats(),
+            self.player2: PlayerStats()
         }
 
     def record_game_result(self, result: str, window: tk.Tk, board: List[List[Optional[str]]]) -> None:
         """Record game results in history.
         
         Args:
-            result: The game result ('Player 1', 'Player 2', or 'Draw')
+            result: The game result (player name or 'Draw')
             window: The tkinter window for timestamp purposes
             board: The current game board state
+            
+        Raises:
+            ValueError: If result is invalid
         """
+        if result not in {self.player1, self.player2, "Draw"}:
+            raise ValueError(f"Invalid game result: {result}")
+            
         # Track moves in the order they were played
         moves = []
-        move_count = 0
-        # Create a temporary board to track move sequence
         size = len(board)
-        temp_board = [[None for _ in range(size)] for _ in range(size)]
-        # Reconstruct move sequence by comparing boards
-        for turn in range(1, size*size + 1):
-            for row in range(size):
-                for col in range(size):
-                    if board[row][col] != temp_board[row][col] and board[row][col] is not None:
-                        moves.append({
-                            "row": row,
-                            "col": col,
-                            "player": board[row][col],
-                            "turn": turn
-                        })
-                        temp_board[row][col] = board[row][col]
-                        move_count += 1
-                        break  # Only one move per turn
-                else:
-                    continue
-                break
+        # Create a list of all moves with coordinates
+        all_moves = [
+            (row, col, board[row][col])
+            for row in range(size)
+            for col in range(size)
+            if board[row][col] is not None
+        ]
+        # Sort moves by player to reconstruct sequence
+        x_moves = [(r,c) for r,c,p in all_moves if p == "X"]
+        o_moves = [(r,c) for r,c,p in all_moves if p == "O"]
+        
+        # Interleave moves in play order
+        for turn, (row, col) in enumerate(zip(x_moves, o_moves), 1):
+            moves.append({"row": row[0], "col": row[1], "player": "X", "turn": turn*2-1})
+            moves.append({"row": col[0], "col": col[1], "player": "O", "turn": turn*2})
+        
+        # Handle odd number of moves
+        if len(x_moves) > len(o_moves):
+            row, col = x_moves[-1]
+            moves.append({"row": row, "col": col, "player": "X", "turn": len(moves)+1})
         
         self.history.add_game(
             player1=self.player1,
@@ -82,25 +135,40 @@ class PlayerManager:
         """Update player scores and statistics based on game result.
         
         Args:
-            winner: The winning player ('Player 1', 'Player 2') or 'Draw'
+            winner: The winning player (name) or 'Draw'
             
-        Features:
-            - Updates scores
-            - Maintains win/loss/draw stats
-            - Handles draws specially
+        Raises:
+            ValueError: If winner is not a valid player or 'Draw'
         """
         if winner == "Draw":
-            if self.player1 in self.stats:
-                self.stats[self.player1]["draws"] += 1
-            if self.player2 in self.stats:
-                self.stats[self.player2]["draws"] += 1
-        elif winner in self.scores:
+            self.stats[self.player1].draws += 1
+            self.stats[self.player2].draws += 1
+            # Reset streaks on draw
+            self.stats[self.player1].win_streak = 0
+            self.stats[self.player2].win_streak = 0
+        elif winner in {self.player1, self.player2}:
             self.scores[winner] += 1
-            if winner in self.stats:
-                self.stats[winner]["wins"] += 1
+            winner_stats = self.stats[winner]
+            winner_stats.wins += 1
+            winner_stats.win_streak += 1
+            
+            # Update max streak if needed
+            if winner_stats.win_streak > winner_stats.max_streak:
+                winner_stats.max_streak = winner_stats.win_streak
+                
+            # Update loser stats
             loser = self.player2 if winner == self.player1 else self.player1
-            if loser in self.stats:
-                self.stats[loser]["losses"] += 1
+            loser_stats = self.stats[loser]
+            loser_stats.losses += 1
+            loser_stats.win_streak = 0
+            
+            # Track if winner moved first
+            if self._last_winner != winner:
+                winner_stats.first_move_win += 1
+                
+            self._last_winner = winner
+        else:
+            raise ValueError(f"Invalid winner: {winner}")
 
     def show_history(self, window: tk.Tk) -> None:
         """Display enhanced game history with animations and replay.
@@ -128,12 +196,12 @@ class PlayerManager:
             - Current scores
             - Win/loss/draw stats
         """
-        p1_stats = self.stats.get(self.player1, {})
-        p2_stats = self.stats.get(self.player2, {})
+        p1_stats = self.stats[self.player1]
+        p2_stats = self.stats[self.player2]
         
         return (
             f"{self.player1} (X): {self.scores[self.player1]} "
-            f"[W{p1_stats.get('wins',0)} L{p1_stats.get('losses',0)} D{p1_stats.get('draws',0)}]\n"
+            f"[W{p1_stats.wins} L{p1_stats.losses} D{p1_stats.draws}]\n"
             f"{self.player2} (O): {self.scores[self.player2]} "
-            f"[W{p2_stats.get('wins',0)} L{p2_stats.get('losses',0)} D{p2_stats.get('draws',0)}]"
+            f"[W{p2_stats.wins} L{p2_stats.losses} D{p2_stats.draws}]"
         )

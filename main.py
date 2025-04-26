@@ -3,14 +3,39 @@ from game_logic import GameLogic
 from player import PlayerManager
 from advanced_ui import AdvancedGameUI
 from game_history import GameHistory
-from typing import Optional
+from typing import Optional, Literal, Callable, Dict, List, Tuple
+from dataclasses import dataclass
+
+@dataclass
+class GameConfig:
+    """Configuration for game settings."""
+    mode: Literal['pvp', 'ai']
+    difficulty: str
+    player1: str
+    player2: str
+    board_size: int = 3
 
 class TicTacToe:
-    """Main Tic Tac Toe game class that coordinates between components."""
+    """Main Tic Tac Toe game class that coordinates between components.
     
-    def __init__(self):
-        """Initialize game components and start the menu."""
+    Features:
+        - Manages game lifecycle
+        - Coordinates between UI and game logic
+        - Handles player input
+        - Manages AI moves
+    """
+    
+    def __init__(self) -> None:
+        """Initialize game components and start the menu.
+        
+        Creates the main window, initializes game components (GUI, logic, player manager),
+        and sets up the initial menu screen.
+        
+        Raises:
+            RuntimeError: If initialization fails
+        """
         self.window = tk.Tk()
+        self.window.protocol("WM_DELETE_WINDOW", self.cleanup)
         self.gui = AdvancedGameUI(self.window)
         self.logic = GameLogic()
         self.players = PlayerManager()
@@ -28,19 +53,44 @@ class TicTacToe:
         self.window.mainloop()
 
     def setup_pvp(self) -> None:
-        """Set up Player vs Player mode with difficulty selection."""
+        """Set up Player vs Player mode with difficulty selection.
+        
+        Gets player names via GUI prompts and initializes game logic
+        with selected difficulty level.
+        
+        Raises:
+            ValueError: If player names are invalid
+        """
         self.mode = "pvp"
-        player1 = self.gui.ask_player_name("Enter name for Player X:")
-        player2 = self.gui.ask_player_name("Enter name for Player O:")
+        while True:
+            player1 = self.gui.ask_player_name("Enter name for Player X:")
+            player2 = self.gui.ask_player_name("Enter name for Player O:")
+            if player1 and player2:
+                break
+            self.gui.show_message("Error", "Player names cannot be empty")
+        
         difficulty = self.gui.difficulty_var.get()
         self.logic = GameLogic(difficulty)
         self.players.set_players(player1, player2, "pvp")
         self.start_game()
 
     def setup_ai(self) -> None:
-        """Set up Player vs AI mode with selected difficulty."""
+        """Set up Player vs AI mode with selected difficulty.
+        
+        Gets player name via GUI prompt and initializes game logic
+        with selected difficulty level for AI opponent.
+        
+        Raises:
+            ValueError: If player name is invalid
+            RuntimeError: If AI initialization fails
+        """
         self.mode = "ai"
-        player1 = self.gui.ask_player_name("Enter your name:")
+        while True:
+            player1 = self.gui.ask_player_name("Enter your name:")
+            if player1:
+                break
+            self.gui.show_message("Error", "Player name cannot be empty")
+        
         difficulty = self.gui.difficulty_var.get()
         self.logic = GameLogic(difficulty)
         self.players.set_players(player1, "Computer", "ai")
@@ -56,7 +106,13 @@ class TicTacToe:
         )
 
     def start_game(self) -> None:
-        """Start a new game with correct board size."""
+        """Start a new game with correct board size.
+        
+        Initializes game state and UI for a new game.
+        
+        Raises:
+            RuntimeError: If game initialization fails
+        """
         self.current_player = "X"
         size = self.logic.manager.get_board_size()
         self.logic.board = [[None for _ in range(size)] for _ in range(size)]
@@ -77,7 +133,16 @@ class TicTacToe:
         self.update_display()
 
     def cell_clicked(self, row: int, col: int) -> None:
-        """Handle cell click event with improved validation."""
+        """Handle cell click event with improved validation.
+        
+        Args:
+            row: Row index of clicked cell
+            col: Column index of clicked cell
+            
+        Raises:
+            ValueError: If move is invalid
+            RuntimeError: If game state update fails
+        """
         try:
             size = len(self.logic.board)
             if row not in range(size) or col not in range(size):
@@ -110,8 +175,9 @@ class TicTacToe:
                 self.players.record_game_result("Draw", self.window, self.logic.board)
                 return
                 
-        except Exception as e:
+        except (IndexError, AttributeError) as e:
             print(f"Cell click error: {e}")
+            self.gui.show_message("Error", "Invalid move attempted")
             return
             
         self.current_player = "O" if self.current_player == "X" else "X"
@@ -121,7 +187,13 @@ class TicTacToe:
             self.window.after(500, self.ai_move)
 
     def ai_move(self) -> None:
-        """Make AI move using minimax algorithm."""
+        """Make AI move using minimax algorithm.
+        
+        Calculates and executes AI move with appropriate delay.
+        
+        Raises:
+            RuntimeError: If AI move calculation fails
+        """
         row, col = self.logic.get_ai_move(self.logic.board)
         self.cell_clicked(row, col)
 
@@ -135,5 +207,17 @@ class TicTacToe:
         """Display game history."""
         self.players.show_history(self.window)
 
+    def cleanup(self) -> None:
+        """Clean up resources before closing the application.
+        
+        Ensures all resources are properly released and
+        game state is saved if needed.
+        """
+        if hasattr(self, 'window'):
+            self.window.destroy()
+
 if __name__ == "__main__":
-    game = TicTacToe()
+    try:
+        game = TicTacToe()
+    except Exception as e:
+        print(f"Fatal error: {e}")

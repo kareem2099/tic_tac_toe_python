@@ -268,51 +268,21 @@ class AdvancedGameUI:
             fg=self.text_color
         ).grid(row=0, column=0, columnspan=4, pady=5)
         
-        self.difficulty_var = tk.StringVar(value="medium")
-        
-        tk.Radiobutton(
+        self.difficulty_var = tk.IntVar(value=5)
+        tk.Scale(
             diff_frame,
-            text="Easy",
+            from_=1,
+            to=10,
+            orient="horizontal",
             variable=self.difficulty_var,
-            value="easy",
+            label="AI Difficulty (1-10)",
             font=self.info_font,
             bg=self.bg_color,
             fg=self.text_color,
-            selectcolor=self.cell_color
-        ).grid(row=1, column=0, padx=5)
-        
-        tk.Radiobutton(
-            diff_frame,
-            text="Medium",
-            variable=self.difficulty_var,
-            value="medium",
-            font=self.info_font,
-            bg=self.bg_color,
-            fg=self.text_color,
-            selectcolor=self.cell_color
-        ).grid(row=1, column=1, padx=5)
-        
-        tk.Radiobutton(
-            diff_frame,
-            text="Hard",
-            variable=self.difficulty_var,
-            value="hard",
-            font=self.info_font,
-            bg=self.bg_color,
-            fg=self.text_color,
-            selectcolor=self.cell_color
-        ).grid(row=1, column=2, padx=5)
-        
-        tk.Radiobutton(
-            diff_frame,
-            text="Insane",
-            variable=self.difficulty_var,
-            value="insane",
-            font=self.info_font,
-            bg=self.bg_color,
-            fg=self.text_color,
-            selectcolor=self.cell_color
-        ).grid(row=1, column=3, padx=5)
+            troughcolor=self.cell_color,
+            activebackground="#4a6fa5",
+            length=300
+        ).grid(row=1, column=0, columnspan=4, pady=10)
         
         button_frame = tk.Frame(self.window, bg=self.bg_color)
         button_frame.pack(pady=20)

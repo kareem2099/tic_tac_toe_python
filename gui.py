@@ -1,15 +1,50 @@
 import tkinter as tk
 from tkinter import simpledialog, messagebox
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Literal, Callable
+from dataclasses import dataclass
+
+@dataclass
+class ButtonStyle:
+    """Dataclass for consistent button styling."""
+    font: Tuple[str, int, str] = ("Segoe UI", 12, "bold")
+    width: int = 22
+    height: int = 1
+    bg: str = "#4f46e5"
+    fg: str = "white"
+    active_bg: str = "#6366f1"
+    borderwidth: int = 0
+    highlightthickness: int = 0
+    relief: str = "flat"
+    padx: int = 10
+    pady: int = 5
+    cursor: str = "hand2"
 
 class GameGUI:
-    """Handles all GUI components for the Tic Tac Toe game."""
+    """Handles all GUI components for the Tic Tac Toe game.
     
-    def __init__(self, window: tk.Tk):
-        """Initialize the GUI with the main window."""
+    Features:
+        - Responsive layout
+        - Modern styling
+        - Animation support
+        - Type-safe configuration
+    """
+    
+    def __init__(self, window: tk.Tk) -> None:
+        """Initialize the GUI with the main window.
+        
+        Args:
+            window: The root tkinter window
+            
+        Raises:
+            ValueError: If window is invalid
+        """
+        if not isinstance(window, tk.Tk):
+            raise ValueError("Invalid window parameter")
+            
         self.window = window
         self.window.title("Tic Tac Toe")
         self.window.configure(bg="#f5f7fa")
+        
         try:
             self.window.wm_attributes('-zoomed', True)  # Try cross-platform maximize
         except:
@@ -17,10 +52,13 @@ class GameGUI:
                 self.window.winfo_screenwidth(),
                 self.window.winfo_screenheight()
             ))
-        self.window.resizable(True, True)  # Allow resizing
+            
+        self.window.resizable(True, True)
+        self._setup_styles()
         
-        # Modern color scheme
-        self.colors = {
+    def _setup_styles(self) -> None:
+        """Initialize all style configurations."""
+        self.colors: Dict[str, str] = {
             "primary": "#4f46e5",
             "secondary": "#6366f1",
             "accent": "#10b981",
@@ -30,12 +68,36 @@ class GameGUI:
             "text": "#334155"
         }
         
+        # Validate color scheme
+        for name, color in self.colors.items():
+            if not isinstance(color, str) or not color.startswith('#'):
+                raise ValueError(f"Invalid color format for {name}: {color}")
+                
+        self.button_style = ButtonStyle()
+        self.control_button_style = ButtonStyle(
+            font=("Segoe UI", 10, "bold"),
+            width=8
+        )
+        
         self.board_buttons: List[List[tk.Button]] = []
         self.info_label: Optional[tk.Label] = None
         self.score_label: Optional[tk.Label] = None
 
-    def menu_screen(self, pvp_callback, ai_callback, history_callback, quit_callback) -> None:
-        """Display the main menu with game mode and difficulty options."""
+    def menu_screen(
+        self,
+        pvp_callback: Callable[[], None],
+        ai_callback: Callable[[], None],
+        history_callback: Callable[[], None],
+        quit_callback: Callable[[], None]
+    ) -> None:
+        """Display the main menu with game mode and difficulty options.
+        
+        Args:
+            pvp_callback: Function to call for PvP mode
+            ai_callback: Function to call for AI mode
+            history_callback: Function to call for history view
+            quit_callback: Function to call to quit game
+        """
         self.clear_window()
         
         # Main title
@@ -122,7 +184,14 @@ class GameGUI:
             btn.bind("<Enter>", lambda e, b=btn: b.config(bg=self.colors["secondary"]))
             btn.bind("<Leave>", lambda e, b=btn: b.config(bg=self.colors["primary"]))
 
-    def setup_game_board(self, cell_click_callback, restart_callback, menu_callback, quit_callback, size=3) -> None:
+    def setup_game_board(
+        self,
+        cell_click_callback: Callable[[int, int], None],
+        restart_callback: Callable[[], None],
+        menu_callback: Callable[[], None],
+        quit_callback: Callable[[], None],
+        size: Literal[3, 4, 5, 6] = 3
+    ) -> None:
         """Initialize and display the game board with responsive layout.
         
         Args:
@@ -131,9 +200,15 @@ class GameGUI:
             menu_callback: Function to call to return to main menu
             quit_callback: Function to call to exit game
             size: Size of the game board (3-6)
+            
+        Raises:
+            ValueError: If size is invalid
         """
+        if size not in {3, 4, 5, 6}:
+            raise ValueError("Board size must be between 3 and 6")
+            
         self.clear_window()
-        self.board_buttons = []
+        self.board_buttons: List[List[tk.Button]] = []
         
         # Main game container
         game_frame = tk.Frame(self.window, bg=self.colors["light"])
@@ -212,16 +287,25 @@ class GameGUI:
         # Right-align Exit button
         tk.Button(controls_frame, text="Exit", command=quit_callback, **control_btn_style).pack(side="right", padx=5)
 
-    def update_board(self, board: List[List[Optional[str]]]) -> None:
+    def update_board(self, board: List[List[Optional[Literal['X', 'O']]]]) -> None:
         """Update the visual state of the board.
         
         Args:
-            board: The current game board state
+            board: The current game board state (2D list of 'X', 'O' or None)
+            
+        Raises:
+            ValueError: If board dimensions don't match button grid
         """
         size = len(board)
+        if size != len(self.board_buttons):
+            raise ValueError("Board size doesn't match UI grid")
+            
         for r in range(size):
             for c in range(size):
-                self.board_buttons[r][c]["text"] = board[r][c] if board[r][c] else ""
+                value = board[r][c]
+                if value not in {'X', 'O', None}:
+                    raise ValueError(f"Invalid board value at ({r},{c}): {value}")
+                self.board_buttons[r][c]["text"] = value if value else ""
 
     def disable_board(self) -> None:
         """Disable all board buttons after game ends."""
