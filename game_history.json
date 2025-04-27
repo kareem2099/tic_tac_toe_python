@@ -2804,5 +2804,111 @@
     ],
     "game_type": "pvc",
     "move_count": 10
+  },
+  {
+    "timestamp": "2025-04-27T01:19:16.222517",
+    "player1": "kareem",
+    "player2": "Computer",
+    "winner": "Computer",
+    "moves": [
+      {
+        "row": 0,
+        "col": 0,
+        "player": "X",
+        "turn": 1
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "player": "O",
+        "turn": 2
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "player": "X",
+        "turn": 3
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "player": "O",
+        "turn": 4
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "player": "X",
+        "turn": 5
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "player": "O",
+        "turn": 6
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "player": "X",
+        "turn": 7
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "player": "O",
+        "turn": 8
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "player": "X",
+        "turn": 9
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "player": "O",
+        "turn": 10
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "player": "X",
+        "turn": 11
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "player": "O",
+        "turn": 12
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "player": "X",
+        "turn": 13
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "player": "O",
+        "turn": 14
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "player": "X",
+        "turn": 15
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "player": "O",
+        "turn": 16
+      }
+    ],
+    "game_type": "pvc",
+    "move_count": 16
   }
 ]

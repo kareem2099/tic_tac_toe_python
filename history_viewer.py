@@ -181,23 +181,33 @@ class HistoryViewer:
             self._show_move(move_num)
             
     def _show_move(self, move_num: int) -> None:
-        """Show specific move in the game."""
+        """Show specific move in the game using stored board states."""
         game = self.history[self.current_game]
         if move_num < 0 or move_num > len(game["moves"]):
             return
             
-        # Reset board to beginning
-        for row in self.cells:
-            for cell in row:
-                cell.config(text="", bg="#34495e")
-                
-        # Play moves up to selected point
-        for i in range(move_num):
-            move = game["moves"][i]
-            row, col = move["row"], move["col"]
-            symbol = "X" if move["player"] == "X" else "O"
-            color = "#e74c3c" if symbol == "X" else "#3498db"
-            self.cells[row][col].config(text=symbol, fg=color)
+        # Get the board state at this move
+        if move_num == 0:
+            board_state = [[None for _ in range(len(self.cells))] for _ in range(len(self.cells))]
+        else:
+            try:
+                board_state = game["moves"][move_num-1]["board_state"]
+                # Validate board state matches current cell count
+                if len(board_state) != len(self.cells) or len(board_state[0]) != len(self.cells[0]):
+                    board_state = [[None for _ in range(len(self.cells[0]))] for _ in range(len(self.cells))]
+            except (KeyError, IndexError):
+                board_state = [[None for _ in range(len(self.cells[0]))] for _ in range(len(self.cells))]
+            
+        # Update board display
+        for row in range(len(board_state)):
+            for col in range(len(board_state[row])):
+                cell = self.cells[row][col]
+                symbol = board_state[row][col]
+                if symbol:
+                    color = "#e74c3c" if symbol == "X" else "#3498db"
+                    cell.config(text=symbol, fg=color)
+                else:
+                    cell.config(text="", bg="#34495e")
             
         self.current_move = move_num
         
@@ -218,24 +228,42 @@ class HistoryViewer:
             self.move_slider.set(self.current_move)
             
     def _replay_game(self) -> None:
-        """Animate replay of the entire game."""
+        """Animate replay of the entire game using stored board states."""
         self._show_move(0)
         game = self.history[self.current_game]
         
         def play_next_move(i=0):
-            if i < len(game["moves"]):
-                move = game["moves"][i]
-                row, col = move["row"], move["col"]
-                symbol = "X" if move["player"] == "X" else "O"
-                color = "#e74c3c" if symbol == "X" else "#3498db"
+            if i <= len(game["moves"]):
+                try:
+                    # Get board state for this move
+                    if i == 0:
+                        board_state = [[None for _ in range(len(self.cells))] for _ in range(len(self.cells))]
+                    else:
+                        board_state = game["moves"][i-1].get("board_state")
+                        if board_state is None:
+                            # Fallback: reconstruct board from moves
+                            board_state = [[None for _ in range(len(self.cells))] for _ in range(len(self.cells))]
+                            for move in game["moves"][:i]:
+                                if "row" in move and "col" in move and "player" in move:
+                                    board_state[move["row"]][move["col"]] = move["player"]
+                except (KeyError, IndexError):
+                    board_state = [[None for _ in range(len(self.cells))] for _ in range(len(self.cells))]
                 
-                # Animate the move with bounds checking
-                if 0 <= row < len(self.cells) and 0 <= col < len(self.cells[0]):
-                    self.animator.pulse(self.cells[row][col], "#34495e", "#4a6fa5", 1, 0.2)
-                    self.cells[row][col].config(text=symbol, fg=color)
+                # Update board display
+                for row in range(len(board_state)):
+                    for col in range(len(board_state[row])): 
+                        cell = self.cells[row][col]
+                        symbol = board_state[row][col]
+                        if symbol:
+                            color = "#e74c3c" if symbol == "X" else "#3498db"
+                            if cell["text"] != symbol:  # Only animate changed cells
+                                self.animator.pulse(cell, "#34495e", "#4a6fa5", 1, 0.2)
+                            cell.config(text=symbol, fg=color)
+                        else:
+                            cell.config(text="", bg="#34495e")
                 
-                self.current_move = i + 1
-                self.move_slider.set(self.current_move)
+                self.current_move = i
+                self.move_slider.set(i)
                 self.window.after(500, play_next_move, i + 1)
                 
         play_next_move()
@@ -247,14 +275,27 @@ class HistoryViewer:
     def _highlight_winner(self) -> None:
         """Animate winning positions."""
         game = self.history[self.current_game]
-        winner = game["winner"]
-        if winner:
+        winner = game.get("winner")
+        if not winner or not self.cells:
+            return
+            
+        try:
             # Find winning positions (this would need game logic integration)
             # For now just highlight all moves by winner
             win_cells = []
-            for move in game["moves"]:
-                if move["player"] == ("X" if winner == game["player1"] else "O"):
-                    win_cells.append(self.cells[move["row"]][move["col"]])
+            player_symbol = "X" if winner == game["player1"] else "O"
             
+            for move in game["moves"]:
+                try:
+                    if (move.get("player") == player_symbol and 
+                        "row" in move and "col" in move and
+                        0 <= move["row"] < len(self.cells) and 
+                        0 <= move["col"] < len(self.cells[0])):
+                        win_cells.append(self.cells[move["row"]][move["col"]])
+                except (KeyError, TypeError):
+                    continue
+                    
             if win_cells:
                 self.animator.animate_win(win_cells, "#2ecc71", 3)
+        except Exception:
+            pass  # Skip highlighting if there are any errors

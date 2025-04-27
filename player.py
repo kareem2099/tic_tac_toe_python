@@ -86,7 +86,7 @@ class PlayerManager:
         }
 
     def record_game_result(self, result: str, window: tk.Tk, board: List[List[Optional[str]]]) -> None:
-        """Record game results in history.
+        """Record game results in history with board states.
         
         Args:
             result: The game result (player name or 'Draw')
@@ -99,29 +99,60 @@ class PlayerManager:
         if result not in {self.player1, self.player2, "Draw"}:
             raise ValueError(f"Invalid game result: {result}")
             
-        # Track moves in the order they were played
-        moves = []
         size = len(board)
-        # Create a list of all moves with coordinates
-        all_moves = [
-            (row, col, board[row][col])
-            for row in range(size)
-            for col in range(size)
-            if board[row][col] is not None
-        ]
+        # Initialize empty board to track state changes
+        current_board = [[None for _ in range(size)] for _ in range(size)]
+        moves = []
+        
+        # Ensure board states are properly initialized for all moves
+        for row in range(size):
+            for col in range(size):
+                if board[row][col] is not None:
+                    # Record the move with current board state
+                    player = board[row][col]
+                    current_board[row][col] = player
+                    moves.append({
+                        "row": row,
+                        "col": col,
+                        "player": player,
+                        "turn": len(moves) + 1,
+                        "board_state": [row.copy() for row in current_board]
+                    })
+        
+        # Get all moves in order by finding when each cell was marked
+        move_sequence = []
+        for row in range(size):
+            for col in range(size):
+                if board[row][col] is not None:
+                    move_sequence.append((row, col, board[row][col]))
+        
         # Sort moves by player to reconstruct sequence
-        x_moves = [(r,c) for r,c,p in all_moves if p == "X"]
-        o_moves = [(r,c) for r,c,p in all_moves if p == "O"]
+        x_moves = [(r,c) for r,c,p in move_sequence if p == "X"]
+        o_moves = [(r,c) for r,c,p in move_sequence if p == "O"]
         
-        # Interleave moves in play order
-        for turn, (row, col) in enumerate(zip(x_moves, o_moves), 1):
-            moves.append({"row": row[0], "col": row[1], "player": "X", "turn": turn*2-1})
-            moves.append({"row": col[0], "col": col[1], "player": "O", "turn": turn*2})
-        
-        # Handle odd number of moves
-        if len(x_moves) > len(o_moves):
-            row, col = x_moves[-1]
-            moves.append({"row": row, "col": col, "player": "X", "turn": len(moves)+1})
+        # Reconstruct the game move by move with board states
+        for turn in range(max(len(x_moves), len(o_moves))):
+            if turn < len(x_moves):
+                x_row, x_col = x_moves[turn]
+                current_board[x_row][x_col] = "X"
+                moves.append({
+                    "row": x_row,
+                    "col": x_col,
+                    "player": "X",
+                    "turn": turn*2 + 1,
+                    "board_state": [row.copy() for row in current_board]
+                })
+            
+            if turn < len(o_moves):
+                o_row, o_col = o_moves[turn]
+                current_board[o_row][o_col] = "O"
+                moves.append({
+                    "row": o_row,
+                    "col": o_col,
+                    "player": "O",
+                    "turn": turn*2 + 2,
+                    "board_state": [row.copy() for row in current_board]
+                })
         
         self.history.add_game(
             player1=self.player1,

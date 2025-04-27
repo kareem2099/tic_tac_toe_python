@@ -289,9 +289,9 @@ class AIPlayer:
                         score=center_score + potential_score
                     ))
         
-        # Sort moves by evaluation score
+        # Sort moves by evaluation score and return just the coordinates
         moves.sort(key=lambda m: m.score, reverse=True)
-        return moves
+        return [(m.row, m.col) for m in moves]
 
     def _get_expert_move(self, board: List[List[Optional[str]]], player: str, required: int) -> Tuple[int, int]:
         """Expert strategy for difficulty levels 9-10 with optimizations"""
@@ -301,7 +301,7 @@ class AIPlayer:
         
         # Use iterative deepening with transposition table
         ordered_moves = self._get_ordered_moves(board, required)
-        best_move = (ordered_moves[0].row, ordered_moves[0].col) if ordered_moves else (0, 0)
+        best_move = ordered_moves[0] if ordered_moves else (0, 0)
         best_score = -float('inf')
         
         for depth in range(1, self.depth_limits[self.difficulty_level] + 1):
@@ -309,7 +309,7 @@ class AIPlayer:
                 break
                 
             for move in ordered_moves:
-                r, c = move.row, move.col
+                r, c = move  # Unpack tuple directly
                 if board[r][c] is None:
                     board[r][c] = player
                     score = -self._negamax(board, depth-1, -float('inf'), float('inf'), 
@@ -334,7 +334,7 @@ class AIPlayer:
             
         max_score = -float('inf')
         for move in self._get_ordered_moves(board, required):
-            r, c = move.row, move.col
+            r, c = move  # Unpack tuple directly
             if board[r][c] is None:
                 board[r][c] = player
                 score = -self._negamax(board, depth-1, -beta, -alpha, 

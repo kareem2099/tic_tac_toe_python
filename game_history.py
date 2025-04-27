@@ -70,20 +70,26 @@ class GameHistory:
         player2: str,
         winner: Optional[str],
         moves: List[Dict],
-        game_type: Literal['pvp', 'pvc'] = "pvp"
+        game_type: Literal['pvp', 'pvc'] = "pvp",
+        board_size: int = 3
     ) -> None:
-        """Add a completed game to history with validation.
+        """Add a completed game to history with validation and board states.
         
         Args:
             player1: Name of player 1
             player2: Name of player 2
             winner: Name of winner (None for tie)
-            moves: List of move dicts with positions and players
+            moves: List of move dicts with positions, players and board states
             game_type: Type of game ('pvp' or 'pvc')
+            board_size: Size of the game board
             
         Raises:
             ValueError: If game data is invalid
         """
+        # Ensure each move has a board_state
+        for move in moves:
+            if 'board_state' not in move:
+                raise ValueError("Each move must include a board_state")
         # Validate inputs
         if not player1 or not player2:
             raise ValueError("Player names cannot be empty")
